@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f6ed">
+  <meta name="description" content="A friendly, hands-on introduction to AI, prompting, and coding.">
+  <title>AI Made Simple | AI Is for Everyone</title>
+  <style>
+    /* These color tokens keep the palette consistent and easy to customize. */
+    :root {
+      color-scheme: light;
+      --forest: #234f1e;
+      --forest-deep: #173b18;
+      --leaf: #dce9d5;
+      --yellow: #f8d003;
+      --cream: #f8f6ed;
+      --paper: #fffef9;
+      --ink: #1b281b;
+      --muted: #586454;
+      --line: #dce1d5;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      --shadow: 0 18px 48px rgba(35, 79, 30, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.6;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button, a, select { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; }
+
+    .site-header {
+      width: min(1160px, calc(100% - 48px));
+      min-height: 78px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--forest-deep);
+      font-weight: 800;
+      text-decoration: none;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 18px;
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .nav-links a:hover, .nav-links a:focus-visible { color: var(--forest); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background-color: var(--forest);
+      background-image: radial-gradient(ellipse at 78% 45%, rgba(248, 208, 3, 0.12), transparent 32%);
+      color: var(--paper);
+    }
+
+    .hero-inner {
+      width: min(1160px, calc(100% - 48px));
+      min-height: 470px;
+      margin: 0 auto;
+      padding: 84px 0 90px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(230px, 0.7fr);
+      align-items: center;
+      gap: 48px;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--yellow);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 700px;
+      margin-bottom: 20px;
+      font-family: var(--serif);
+      font-size: clamp(48px, 7vw, 82px);
+      font-weight: 500;
+      line-height: 0.99;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 540px;
+      margin-bottom: 30px;
+      color: #e2eadf;
+      font-size: 17px;
+    }
+
+    .button {
+      min-height: 48px;
+      padding: 12px 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 6px;
+      background: var(--yellow);
+      color: var(--forest-deep);
+      cursor: pointer;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 160ms ease, background-color 160ms ease;
+    }
+
+    .button:hover { transform: translateY(-2px); background: #ffdd32; }
+    .button:focus-visible, a:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #e9b800; outline-offset: 3px; }
+
+    .hero-art {
+      position: relative;
+      width: min(100%, 320px);
+      aspect-ratio: 1;
+      margin: auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 254, 249, 0.22);
+      border-radius: 50%;
+      animation: float-in 800ms ease both;
+    }
+
+    .hero-art::before, .hero-art::after {
+      position: absolute;
+      content: "";
+      border: 1px solid rgba(255, 254, 249, 0.18);
+      border-radius: 50%;
+    }
+    .hero-art::before { inset: 24px; }
+    .hero-art::after { inset: 50px; }
+
+    .art-sun {
+      z-index: 1;
+      width: 128px;
+      height: 128px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--yellow);
+      color: var(--forest-deep);
+      font-family: var(--serif);
+      font-size: 56px;
+      box-shadow: 0 0 0 14px rgba(248, 208, 3, 0.13);
+    }
+
+    .art-note {
+      position: absolute;
+      z-index: 2;
+      right: -8px;
+      bottom: 38px;
+      padding: 10px 15px;
+      border-radius: 5px;
+      background: var(--paper);
+      color: var(--forest);
+      font-size: 13px;
+      font-weight: 750;
+      box-shadow: var(--shadow);
+      transform: rotate(3deg);
+    }
+
+    main { padding-bottom: 74px; }
+    .section { width: min(1060px, calc(100% - 48px)); margin: 0 auto; padding-top: 88px; }
+
+    .section-heading { max-width: 660px; margin-bottom: 34px; }
+    .section-heading .eyebrow { color: var(--forest); margin-bottom: 10px; }
+    h2 {
+      margin-bottom: 12px;
+      color: var(--forest-deep);
+      font-family: var(--serif);
+      font-size: clamp(34px, 4.5vw, 48px);
+      font-weight: 500;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .section-heading > p:last-child { margin-bottom: 0; color: var(--muted); }
+
+    .lesson-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .lesson-card {
+      min-height: 236px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: 0 6px 20px rgba(35, 79, 30, 0.035);
+      animation: rise-in 600ms ease both;
+    }
+    .lesson-card:nth-child(2) { animation-delay: 100ms; }
+    .lesson-card:nth-child(3) { animation-delay: 200ms; }
+    .lesson-icon {
+      width: 43px;
+      height: 43px;
+      margin-bottom: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--leaf);
+      font-size: 21px;
+    }
+    .lesson-card:nth-child(2) .lesson-icon { background: #fff0a7; }
+    .lesson-card:nth-child(3) .lesson-icon { background: #dce8ed; }
+    .lesson-card h3 { margin-bottom: 9px; color: var(--forest-deep); font-size: 19px; }
+    .lesson-card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .builder-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 32px;
+      align-items: start;
+    }
+    .builder-note { max-width: 370px; color: var(--muted); }
+    .builder-note strong { color: var(--forest); }
+    .builder-panel {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    .field-label { display: block; margin: 0 0 8px; color: var(--forest-deep); font-size: 13px; font-weight: 800; }
+    .field-group { margin-bottom: 19px; }
+    select, textarea {
+      width: 100%;
+      border: 1px solid #cbd5c7;
+      border-radius: 5px;
+      background: #fff;
+      color: var(--ink);
+    }
+    select { min-height: 46px; padding: 9px 12px; }
+    textarea { min-height: 100px; padding: 12px; resize: vertical; }
+    textarea::placeholder { color: #788274; }
+    .builder-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+    .builder-controls .button { min-height: 44px; }
+    .helper-text { margin: 0; color: var(--muted); font-size: 12px; }
+    .output-wrap { margin-top: 23px; }
+    .output-box {
+      min-height: 112px;
+      padding: 16px;
+      border-left: 3px solid var(--yellow);
+      border-radius: 3px;
+      background: #f3f5ee;
+      color: #344330;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+    .copy-button {
+      margin-top: 10px;
+      padding: 7px 0;
+      border: 0;
+      background: transparent;
+      color: var(--forest);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .copy-button:hover { text-decoration: underline; }
+
+    .quiz-section {
+      width: min(1060px, calc(100% - 48px));
+      margin: 88px auto 0;
+      padding: 42px;
+      border-radius: 8px;
+      background: var(--forest);
+      color: var(--paper);
+    }
+    .quiz-section .section-heading { margin-bottom: 27px; }
+    .quiz-section .section-heading .eyebrow { color: var(--yellow); }
+    .quiz-section h2 { color: var(--paper); }
+    .quiz-section .section-heading > p:last-child { color: #d5e0d1; }
+    .quiz-topline { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; color: #d5e0d1; font-size: 13px; font-weight: 700; }
+    .progress-track { height: 5px; flex: 1; overflow: hidden; border-radius: 5px; background: rgba(255, 255, 255, 0.2); }
+    .progress-fill { width: 0; height: 100%; border-radius: inherit; background: var(--yellow); transition: width 250ms ease; }
+    .question { margin-bottom: 17px; color: var(--paper); font-family: var(--serif); font-size: 25px; line-height: 1.25; }
+    .answer-list { display: grid; gap: 10px; }
+    .answer-button {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 15px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--paper);
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .answer-button:not(:disabled):hover { border-color: var(--yellow); background: rgba(255, 255, 255, 0.12); }
+    .answer-button:disabled { cursor: default; }
+    .answer-button.correct { border-color: var(--yellow); background: rgba(248, 208, 3, 0.17); }
+    .answer-button.incorrect { border-color: #f5a39a; background: rgba(245, 163, 154, 0.14); }
+    .quiz-bottom { min-height: 58px; margin-top: 17px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+    .feedback { margin: 0; color: #e5eddc; font-size: 14px; }
+    .quiz-bottom .button { min-height: 42px; padding: 9px 16px; }
+    .quiz-bottom .button:disabled { background: #c4cbbd; cursor: not-allowed; transform: none; }
+    .quiz-result { margin: 0; padding: 24px 0 10px; color: var(--paper); font-family: var(--serif); font-size: 30px; }
+    .quiz-result span { color: var(--yellow); }
+
+    .site-footer { padding: 24px; border-top: 1px solid var(--line); color: var(--muted); text-align: center; font-size: 13px; }
+    .site-footer strong { color: var(--forest); }
+
+    @keyframes rise-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float-in { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+
+    @media (max-width: 760px) {
+      .site-header { width: min(100% - 36px, 600px); min-height: 70px; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 12px; }
+      .hero-inner { width: min(100% - 40px, 600px); min-height: auto; padding: 65px 0; grid-template-columns: 1fr; gap: 34px; }
+      .hero-art { width: 220px; }
+      .art-sun { width: 92px; height: 92px; font-size: 40px; }
+      .art-note { right: -19px; bottom: 19px; }
+      .section { width: min(100% - 40px, 600px); padding-top: 68px; }
+      .lesson-grid { grid-template-columns: 1fr; gap: 12px; }
+      .lesson-card { min-height: 0; padding: 22px; }
+      .lesson-icon { margin-bottom: 13px; }
+      .builder-layout { grid-template-columns: 1fr; gap: 18px; }
+      .builder-note { max-width: none; }
+      .builder-panel { padding: 21px; }
+      .quiz-section { width: min(100% - 32px, 600px); margin-top: 68px; padding: 28px 21px; }
+    }
+
+    @media (max-width: 430px) {
+      .brand { gap: 7px; font-size: 14px; }
+      .brand-mark { width: 30px; height: 30px; }
+      .nav-links { gap: 11px; }
+      .nav-links a { font-size: 11px; }
+      .quiz-topline { flex-wrap: wrap; }
+      .progress-track { min-width: 100%; order: 2; }
+      .quiz-bottom { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="AI Made Simple home">
+      <span class="brand-mark" aria-hidden="true">✳</span>
+      <span>AI Made Simple</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#start-here">Explore</a>
+      <a href="#prompt-builder">Prompt builder</a>
+      <a href="#quiz">Quiz</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <div>
+        <p class="eyebrow">A little curiosity goes a long way</p>
+        <h1 id="hero-title">AI Is for Everyone</h1>
+        <p class="hero-copy">A friendly place to understand artificial intelligence, try your first prompt, and see what you can create.</p>
+        <a class="button" href="#start-here">Let's get curious <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="hero-art" aria-label="A bright idea surrounded by growing rings" role="img">
+        <div class="art-sun" aria-hidden="true">AI</div>
+        <span class="art-note">Start anywhere ✦</span>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section class="section" id="start-here" aria-labelledby="learn-title">
+      <div class="section-heading">
+        <p class="eyebrow">The simple version</p>
+        <h2 id="learn-title">Three ideas to get you started</h2>
+        <p>No special background needed. Think of AI as a tool you can learn to work with, one small experiment at a time.</p>
+      </div>
+      <div class="lesson-grid">
+        <article class="lesson-card">
+          <div class="lesson-icon" aria-hidden="true">✳</div>
+          <h3>What is AI?</h3>
+          <p>Artificial intelligence is software that finds patterns and uses them to help with tasks, like answering questions or recognizing pictures. It can be useful, but it can also make mistakes.</p>
+        </article>
+        <article class="lesson-card">
+          <div class="lesson-icon" aria-hidden="true">✎</div>
+          <h3>The art of prompting</h3>
+          <p>A prompt is the instruction or question you give an AI tool. Clear context, a specific goal, and a little back-and-forth usually lead to more helpful results.</p>
+        </article>
+        <article class="lesson-card">
+          <div class="lesson-icon" aria-hidden="true">&lt;/&gt;</div>
+          <h3>A first step into code</h3>
+          <p>Code is a set of instructions that tells a computer what to do. AI can explain code and help you try ideas, while you stay in charge of checking how it works.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="prompt-builder" aria-labelledby="builder-title">
+      <div class="builder-layout">
+        <div>
+          <div class="section-heading">
+            <p class="eyebrow">Try it yourself</p>
+            <h2 id="builder-title">Build a better prompt</h2>
+            <p>Choose a goal, add your own idea, and get a prompt you can use as a starting point.</p>
+          </div>
+          <p class="builder-note"><strong>A small tip:</strong> AI works best when you tell it what you need, who the answer is for, and what a good result looks like. You can always ask it to try again.</p>
+        </div>
+        <form class="builder-panel" id="prompt-form">
+          <div class="field-group">
+            <label class="field-label" for="prompt-type">What would you like help with?</label>
+            <select id="prompt-type" name="type">
+              <option value="learning">Learning something</option>
+              <option value="writing">Writing</option>
+              <option value="brainstorming">Brainstorming</option>
+              <option value="coding">Coding</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="prompt-idea">What's on your mind?</label>
+            <textarea id="prompt-idea" name="idea" placeholder="For example: I want to understand how rainbows form" required></textarea>
+          </div>
+          <div class="builder-controls">
+            <button class="button" type="submit">Build my prompt <span aria-hidden="true">→</span></button>
+            <p class="helper-text">Your idea stays right here in your browser.</p>
+          </div>
+          <div class="output-wrap" aria-live="polite" aria-atomic="true">
+            <span class="field-label" id="output-label">Your prompt will appear here</span>
+            <div class="output-box" id="prompt-output">Choose a goal and add your idea to get started.</div>
+            <button class="copy-button" id="copy-prompt" type="button" hidden>Copy prompt</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="quiz-section" id="quiz" aria-labelledby="quiz-title">
+      <div class="section-heading">
+        <p class="eyebrow">A quick check-in</p>
+        <h2 id="quiz-title">What have you picked up?</h2>
+        <p>Three questions, no pressure. Choose an answer to get instant feedback.</p>
+      </div>
+      <div id="quiz-content" aria-live="polite">
+        <div class="quiz-topline">
+          <span id="question-count">Question 1 of 3</span>
+          <div class="progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <span id="score-display">Score: 0</span>
+        </div>
+        <h3 class="question" id="question-text"></h3>
+        <div class="answer-list" id="answer-list"></div>
+        <div class="quiz-bottom">
+          <p class="feedback" id="quiz-feedback" role="status"></p>
+          <button class="button" id="next-question" type="button" disabled>Choose an answer</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><strong>Created by Asma Ashraf</strong> | Learning and Sharing AI.</footer>
+
+  <script>
+    // Each prompt style gives the AI a different kind of helpful instruction.
+    const promptGuides = {
+      learning: (idea) => `I want to learn about: ${idea}\nExplain it in simple, beginner-friendly language. Break it into a few clear steps, include a relatable example, and finish with one question I can use to check my understanding.`,
+      writing: (idea) => `Help me with this writing task: ${idea}\nFirst ask me any important questions about the audience or tone. Then suggest a clear draft, explain your choices briefly, and leave room for me to make it my own.`,
+      brainstorming: (idea) => `Help me brainstorm ideas for: ${idea}\nShare 5 varied possibilities, including one unexpected idea. Keep each one short and add a question that will help me choose what to explore next.`,
+      coding: (idea) => `I am a beginner working on: ${idea}\nHelp me understand the approach before showing code. Use clear steps, explain any new terms, and include a small example I can try and check.`,
+    };
+
+    const promptForm = document.querySelector("#prompt-form");
+    const promptOutput = document.querySelector("#prompt-output");
+    const copyButton = document.querySelector("#copy-prompt");
+
+    // Build the prompt locally; no information is sent to an outside service.
+    promptForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const idea = document.querySelector("#prompt-idea").value.trim();
+      const type = document.querySelector("#prompt-type").value;
+
+      if (!idea) {
+        document.querySelector("#prompt-idea").focus();
+        return;
+      }
+
+      promptOutput.textContent = promptGuides[type](idea);
+      document.querySelector("#output-label").textContent = "Your ready-to-use prompt";
+      copyButton.hidden = false;
+    });
+
+    // Copy the finished prompt, with a fallback for browsers without Clipboard access.
+    copyButton.addEventListener("click", async () => {
+      const text = promptOutput.textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        copyButton.textContent = "Copied!";
+      } catch {
+        const temporaryInput = document.createElement("textarea");
+        temporaryInput.value = text;
+        temporaryInput.style.position = "fixed";
+        temporaryInput.style.opacity = "0";
+        document.body.append(temporaryInput);
+        temporaryInput.select();
+        document.execCommand("copy");
+        temporaryInput.remove();
+        copyButton.textContent = "Copied!";
+      }
+      window.setTimeout(() => { copyButton.textContent = "Copy prompt"; }, 1800);
+    });
+
+    // The quiz content and correct answers are kept together for easy editing.
+    const quizQuestions = [
+      {
+        question: "What is a prompt?",
+        answers: ["A type of computer", "An instruction or question for an AI tool", "A guarantee that AI is correct"],
+        correct: 1,
+        explanation: "Exactly! A prompt is what you ask or tell an AI tool to do.",
+      },
+      {
+        question: "What can help an AI give you a more useful answer?",
+        answers: ["Adding clear context and details", "Using the fewest words possible every time", "Assuming the first answer is always right"],
+        correct: 0,
+        explanation: "Right! Helpful context and a clear goal give the AI more to work with.",
+      },
+      {
+        question: "What should you remember when using AI?",
+        answers: ["It never makes mistakes", "You don't need to check its answers", "It can be helpful, but its answers need checking"],
+        correct: 2,
+        explanation: "That's it. AI can help, but it's a good idea to check important answers.",
+      },
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let hasAnswered = false;
+
+    // Draw one question at a time and connect each answer to immediate feedback.
+    function showQuestion() {
+      const item = quizQuestions[currentQuestion];
+      hasAnswered = false;
+      document.querySelector("#question-count").textContent = `Question ${currentQuestion + 1} of ${quizQuestions.length}`;
+      document.querySelector("#score-display").textContent = `Score: ${score}`;
+      document.querySelector("#question-text").textContent = item.question;
+      const answerList = document.querySelector("#answer-list");
+      answerList.replaceChildren();
+      document.querySelector("#quiz-feedback").textContent = "";
+      const nextButton = document.querySelector("#next-question");
+      nextButton.disabled = true;
+      nextButton.textContent = "Choose an answer";
+
+      item.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.className = "answer-button";
+        button.type = "button";
+        button.textContent = answer;
+        button.addEventListener("click", () => chooseAnswer(index));
+        answerList.append(button);
+      });
+
+      document.querySelector(".progress-track").setAttribute("aria-valuenow", String(currentQuestion));
+      document.querySelector("#progress-fill").style.width = `${(currentQuestion / quizQuestions.length) * 100}%`;
+    }
+
+    function chooseAnswer(selectedIndex) {
+      if (hasAnswered) return;
+      hasAnswered = true;
+      const item = quizQuestions[currentQuestion];
+      const answerButtons = document.querySelector("#answer-list").querySelectorAll("button");
+
+      answerButtons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === item.correct) button.classList.add("correct");
+        else if (index === selectedIndex) button.classList.add("incorrect");
+      });
+
+      if (selectedIndex === item.correct) {
+        score += 1;
+        document.querySelector("#quiz-feedback").textContent = item.explanation;
+      } else {
+        document.querySelector("#quiz-feedback").textContent = `Not quite. ${item.explanation}`;
+      }
+
+      document.querySelector("#score-display").textContent = `Score: ${score}`;
+      const nextButton = document.querySelector("#next-question");
+      nextButton.disabled = false;
+      nextButton.textContent = currentQuestion === quizQuestions.length - 1 ? "See my score" : "Next question →";
+    }
+
+    document.querySelector("#next-question").addEventListener("click", () => {
+      if (!hasAnswered) return;
+      currentQuestion += 1;
+
+      if (currentQuestion === quizQuestions.length) {
+        document.querySelector("#progress-fill").style.width = "100%";
+        document.querySelector(".progress-track").setAttribute("aria-valuenow", String(quizQuestions.length));
+        document.querySelector("#quiz-content").innerHTML = `
+          <p class="quiz-result">You scored <span>${score} out of ${quizQuestions.length}</span>.</p>
+          <p class="feedback">${score === quizQuestions.length ? "Wonderful work. Keep asking good questions!" : "Every question is a chance to learn. Give it another go whenever you're ready."}</p>
+          <div class="quiz-bottom"><span></span><button class="button" id="restart-quiz" type="button">Try again</button></div>
+        `;
+        document.querySelector("#restart-quiz").addEventListener("click", restartQuiz);
+        return;
+      }
+
+      showQuestion();
+    });
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      const quizContent = document.querySelector("#quiz-content");
+      quizContent.innerHTML = `
+        <div class="quiz-topline">
+          <span id="question-count">Question 1 of 3</span>
+          <div class="progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0"><div class="progress-fill" id="progress-fill"></div></div>
+          <span id="score-display">Score: 0</span>
+        </div>
+        <h3 class="question" id="question-text"></h3>
+        <div class="answer-list" id="answer-list"></div>
+        <div class="quiz-bottom"><p class="feedback" id="quiz-feedback" role="status"></p><button class="button" id="next-question" type="button" disabled>Choose an answer</button></div>
+      `;
+
+      // Refresh the references because the quiz content was rebuilt above.
+      const newNextButton = document.querySelector("#next-question");
+      newNextButton.addEventListener("click", () => {
+        if (!hasAnswered) return;
+        currentQuestion += 1;
+        if (currentQuestion === quizQuestions.length) {
+          document.querySelector("#progress-fill").style.width = "100%";
+          document.querySelector(".progress-track").setAttribute("aria-valuenow", String(quizQuestions.length));
+          document.querySelector("#quiz-content").innerHTML = `
+            <p class="quiz-result">You scored <span>${score} out of ${quizQuestions.length}</span>.</p>
+            <p class="feedback">${score === quizQuestions.length ? "Wonderful work. Keep asking good questions!" : "Every question is a chance to learn. Give it another go whenever you're ready."}</p>
+            <div class="quiz-bottom"><span></span><button class="button" id="restart-quiz" type="button">Try again</button></div>
+          `;
+          document.querySelector("#restart-quiz").addEventListener("click", restartQuiz);
+        } else {
+          showQuestion();
+        }
+      });
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
